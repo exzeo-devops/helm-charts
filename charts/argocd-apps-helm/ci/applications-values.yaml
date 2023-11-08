@@ -1,0 +1,12 @@
+#  Test with applications
+
+default:
+  app:
+    source:
+      repoURL: https://github.com/argoproj/argocd-example-apps.git
+
+applications:
+  argocd-application:
+    namespace: kube-system
+    helm:
+      repoURL: https://github.com/argoproj/argocd-example-apps.git
