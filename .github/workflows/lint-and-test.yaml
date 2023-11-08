@@ -45,25 +45,22 @@ jobs:
           # Note: Also update in scripts/lint.sh
           version: v3.10.0
 
-      - name: List changed charts
+      - name: Run chart-testing (list-changed)
         id: list-changed
         run: |
-          ## If executed with debug this won't work anymore.
-          changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
-          charts=$(echo "$changed" | tr '\n' ' ' | xargs)
+          changed=$(ct list-changed)
           if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+            echo "::set-output name=changed::true"
           fi
-
-      - name: Run chart-testing (lint)
-        run: ct lint --debug --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml
 
       - name: Create kind cluster
         uses: helm/kind-action@dda0770415bac9fc20092cacbc54aa298604d140 # v1.8.0
         if: steps.list-changed.outputs.changed == 'true'
         with:
           config: .github/configs/kind-config.yaml
+
+      - name: Run chart-testing (lint)
+        run: ct lint --debug --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml
 
       - name: Run chart-testing (install)
         run: ct install --config ./.github/configs/ct-install.yaml
