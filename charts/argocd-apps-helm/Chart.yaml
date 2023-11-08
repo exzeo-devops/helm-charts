@@ -3,5 +3,5 @@ name: argocd-apps
 version: 0.1.2
 appVersion: "1.0"
 maintainers:
-  - name: exzeo-devios
+  - name: exzeo-devops
     url: https://exzeo-devops.github.io/
