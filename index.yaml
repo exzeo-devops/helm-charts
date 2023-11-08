@@ -3,10 +3,18 @@ entries:
   argocd-apps:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2023-11-08T16:57:37.541232763Z"
+    digest: 044376618d259679d55d447adff31e9d289f8e9af844833a51e6f2afdb13970d
+    name: argocd-apps
+    urls:
+    - https://github.com/exzeo-devops/argocd-apps-helm/releases/download/argocd-apps-0.1.1/argocd-apps-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2023-11-08T16:49:34.467330381Z"
     digest: e6fe2de310301a6984780005a93866e05cb56efdb39c97b0d07d2cff7f466820
     name: argocd-apps
     urls:
     - https://github.com/exzeo-devops/argocd-apps-helm/releases/download/argocd-apps-0.1.0/argocd-apps-0.1.0.tgz
     version: 0.1.0
-generated: "2023-11-08T16:49:34.467335181Z"
+generated: "2023-11-08T16:57:37.541284064Z"
