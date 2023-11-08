@@ -10,7 +10,7 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: {{ $value.namespace | default $name }}
+    namespace: {{ $value.namespac | default $name }}
     server: {{ $value.server | default $.Values.default.app.destination.server | required (printf "No destination.server specified for %s" $name ) }}
 
   project: {{ $value.project | default $.Values.default.app.project | required (printf "No project specified for %s" $name ) }}
