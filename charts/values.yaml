@@ -1,0 +1,29 @@
+default:
+  path: "cluster/<name>"
+  app:
+    destination:
+      server: "https://kubernetes.default.svc"
+    project: "default"
+    source:
+      repoURL: ""
+      targetRevision: HEAD
+    revisionHistoryLimit: 10
+    syncPolicy:
+      automated:
+        prune: true
+        selfHeal: true
+      retry:
+        limit: 1
+        backoff:
+          duration: 5s
+          factor: 2
+          maxDuration: 1m0s
+    syncOptions:
+      replace: false
+      serverApply: false
+      pruneLast: false
+      skipValidate: false
+      applyOutOfSyncOnly: false
+
+
+applications: []

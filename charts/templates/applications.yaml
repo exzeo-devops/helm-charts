@@ -1,0 +1,81 @@
+{{- range $name, $value := .Values.applications }}
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $name }}
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: {{ $value.namespace | default $name }}
+    server: {{ $value.server | default $.Values.default.app.destination.server | required (printf "No destination.server specified for %s" $name ) }}
+
+  project: {{ $value.project | default $.Values.default.app.project | required (printf "No project specified for %s" $name ) }}
+
+  sources:
+{{- if $value.helm }}
+    - repoURL: {{ $value.helm.repoURL | default $.Values.default.app.source.repoURL }}
+      chart: {{ $name }}
+
+{{- if $value.helm.targetRevision }}
+      targetRevision: {{ $value.helm.targetRevision }}
+{{- end }}
+
+      helm:
+
+{{- if $value.helm.ignoreMissingValueFiles }}
+        ignoreMissingValueFiles: {{ $value.helm.ignoreMissingValueFiles }}
+{{- end }}
+
+{{- if $value.helm.passCredentials }}
+        passCredentials: {{ $value.helm.passCredentials }}
+{{- end }}
+
+{{- if $value.helm.releaseName }}
+        releaseName: {{ $value.helm.releaseName }}
+{{- end }}
+
+{{- if $value.helm.skipCrds }}
+        skipCrds: {{ $value.helm.skipCrds }}
+{{- end }}
+
+{{- if $value.helm.version }}
+        version: {{ $value.helm.version }}
+{{- end }}
+
+{{- if $value.helm.fileParameters }}
+        fileParameters:
+{{ $value.helm.fileParameters | toYaml | indent 10 }}
+{{- end }}
+
+{{- if $value.helm.parameters }}
+        parameters:
+{{ $value.helm.parameters | toYaml | indent 10 }}
+{{- end }}
+
+{{- if $value.helm.values }}
+        values: |
+{{ $value.helm.values | toYaml | indent 10 }}
+{{- end }}
+
+{{- if $value.helm.valuesObject }}
+        valuesObject:
+{{ $value.helm.valuesObject | toYaml | indent 10 }}
+{{- end }}
+
+{{- if $value.helm.valueFiles }}
+        valueFiles:
+{{ $value.helm.valueFiles | toYaml | indent 10 }}
+{{- end }}
+{{- end }}
+
+{{- if $value.git }}
+    - repoURL: {{ $value.git.repoURL | default $.Values.default.app.source.repoURL }}
+      path: {{ $value.git.path | required (printf "No path specified for %s" $name ) }}
+{{- end }}
+
+
+{{- end }}
