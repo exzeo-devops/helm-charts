@@ -43,9 +43,7 @@ jobs:
           config: .github/configs/kind-config.yaml
 
       - name: Deploy latest ArgoCD CRDs when testing ArgoCD extensions
-        if: |
-          contains(steps.list-changed.outputs.changed_charts, 'argocd-image-updater') ||
-          contains(steps.list-changed.outputs.changed_charts, 'argocd-apps')
+        if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm repo add argo https://argoproj.github.io/argo-helm
           helm template argo/argo-cd --set server.extensions.enabled=true -s templates/crds/* | kubectl apply -f -          
