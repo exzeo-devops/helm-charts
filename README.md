@@ -1,1 +1,1 @@
-# argocd-apps-helm
+# helm-charts

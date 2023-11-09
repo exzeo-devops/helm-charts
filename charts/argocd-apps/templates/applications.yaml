@@ -5,7 +5,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $name }}
-  namespace: argocd
+  namespace: {{ $.Values.default.app.namespace | default "argocd" }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
@@ -74,7 +74,7 @@ spec:
 
 {{- if $value.git }}
     - repoURL: {{ $value.git.repoURL | default $.Values.default.app.source.repoURL }}
-      path: {{ $value.git.path | required (printf "No path specified for %s!" $name ) }}
+      path: {{ $value.git.path | required (printf "No path specified for %s!!!" $name ) }}
 {{- end }}
 
 
