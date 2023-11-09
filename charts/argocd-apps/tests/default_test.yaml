@@ -1,0 +1,43 @@
+suite: Test defaults
+templates:
+  - applications.yaml
+tests:
+  - it: default
+    values:
+        - ./values/default/default.yaml
+    asserts:
+      - isKind:
+          of: Application        
+      - equal:
+          path: metadata.namespace
+          value: argocd
+      - equal:
+          path: spec.destination.namespace
+          value: test-app
+      - equal:
+          path: spec.project
+          value: default
+      - equal:
+          path: spec.destination.server
+          value: https://kubernetes.default.svc
+
+
+  - it: application namespace
+    values:
+        - ./values/default/application_namespace.yaml
+    asserts:
+      - isKind:
+          of: Application        
+      - equal:
+          path: metadata.namespace
+          value: test
+
+  - it: namespace
+    values:
+        - ./values/default/namespace.yaml
+    asserts:
+      - isKind:
+          of: Application        
+      - equal:
+          path: spec.destination.namespace
+          value: test-app

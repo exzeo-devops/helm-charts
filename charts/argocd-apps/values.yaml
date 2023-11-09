@@ -1,6 +1,7 @@
 default:
   path: "cluster/<name>"
   app:
+    namespace: "argocd"
     destination:
       server: "https://kubernetes.default.svc"
     project: "default"

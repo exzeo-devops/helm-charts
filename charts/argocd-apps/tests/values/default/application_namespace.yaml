@@ -1,0 +1,7 @@
+default:
+  app:
+    namespace: "test"
+
+applications:
+  test-app:
+    namespace: kube-system

@@ -1,0 +1,3 @@
+applications:
+  test-app:
+    namespace: kube-system

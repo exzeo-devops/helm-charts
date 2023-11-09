@@ -1,0 +1,44 @@
+suite: Test single application
+templates:
+  - applications.yaml
+tests:
+  - it: minimal application
+    values:
+        - ./values/single/minimal.yaml
+    asserts:
+      - isKind:
+          of: Application
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: test-app
+      - equal:
+          path: spec.destination.namespace
+          value: kube-system
+  - it: details application
+    values:
+        - ./values/single/details.yaml
+    asserts:
+      - isKind:
+          of: Application
+      - hasDocuments:
+          count: 1
+      - equal:
+          path: metadata.name
+          value: test-app
+      - equal:
+          path: spec.destination.namespace
+          value: kube-system          
+      - equal:
+          path: spec.sources[0].repoURL
+          value: https://example.github.io/charts
+      - equal:
+          path: spec.sources[0].targetRevision
+          value: "x"
+      - equal:
+          path: spec.sources[0].helm.valuesObject.replicas
+          value: 1
+      - equal:
+          path: spec.sources[0].helm.valuesObject.metrics.enabled
+          value: true

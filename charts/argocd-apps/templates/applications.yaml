@@ -5,12 +5,12 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $name }}
-  namespace: {{ $.Values.default.namespace | default "argocd" }}
+  namespace: {{ $.Values.default.app.namespace | default "argocd" }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   destination:
-    namespace: {{ $value.namespac | default $name }}
+    namespace: {{ $value.namespace | default $name }}
     server: {{ $value.server | default $.Values.default.app.destination.server | required (printf "No destination.server specified for %s" $name ) }}
 
   project: {{ $value.project | default $.Values.default.app.project | required (printf "No project specified for %s" $name ) }}

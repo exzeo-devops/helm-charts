@@ -21,33 +21,29 @@ jobs:
           python-version: '3.10'
           check-latest: true
 
+      - name: Install helm unittest
+        run: |
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+
+      - name: Run helm unit tests
+        run: |
+          helm unittest ./charts/argocd-apps
+
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.0
 
-      - name: Run chart-testing (list-changed)
-        id: list-changed
-        run: |
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
-          if [[ -n "$changed" ]]; then
-            echo "changed=true" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Run chart-testing (lint)
-        if: steps.list-changed.outputs.changed == 'true'
         run: ct lint --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Create kind cluster
-        if: steps.list-changed.outputs.changed == 'true'
         uses: helm/kind-action@v1.8.0
         with:
           config: .github/configs/kind-config.yaml
 
       - name: Deploy latest ArgoCD CRDs when testing ArgoCD extensions
-        if: steps.list-changed.outputs.changed == 'true'
         run: |
           helm repo add argo https://argoproj.github.io/argo-helm
           helm template argo/argo-cd --namespace argocd --set server.extensions.enabled=true -s templates/crds/* | kubectl apply -f -          
 
       - name: Run chart-testing (install)
-        if: steps.list-changed.outputs.changed == 'true'
         run: ct install --config ./.github/configs/ct-install.yaml --target-branch ${{ github.event.repository.default_branch }}
