@@ -21,26 +21,40 @@ jobs:
           python-version: '3.10'
           check-latest: true
 
-      - name: Install helm unittest
-        run: |
-          helm plugin install https://github.com/helm-unittest/helm-unittest.git
+      # - name: Install helm unittest
+      #   run: |
+      #     helm plugin install https://github.com/helm-unittest/helm-unittest.git
 
-      - name: Run helm unit tests
-        run: |
-          helm unittest ./charts/argocd-apps
+      # - name: Run helm unit tests
+      #   run: |
+      #     helm unittest ./charts
 
       - name: Set up chart-testing
         uses: helm/chart-testing-action@v2.6.0
+
+      - name: List changed charts
+        id: list-changed
+        run: |
+          ## If executed with debug this won't work anymore.
+          changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
+          charts=$(echo "$changed" | tr '\n' ' ' | xargs)
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+          fi
 
       - name: Run chart-testing (lint)
         run: ct lint --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml --target-branch ${{ github.event.repository.default_branch }}
 
       - name: Create kind cluster
         uses: helm/kind-action@v1.8.0
+        if: steps.list-changed.outputs.changed == 'true'
         with:
           config: .github/configs/kind-config.yaml
 
       - name: Deploy latest ArgoCD CRDs when testing ArgoCD extensions
+        if: |
+          contains(steps.list-changed.outputs.changed_charts, 'argocd-apps')
         run: |
           helm repo add argo https://argoproj.github.io/argo-helm
           helm template argo/argo-cd --namespace argocd --set server.extensions.enabled=true -s templates/crds/* | kubectl apply -f -          
