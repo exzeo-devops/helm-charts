@@ -5,77 +5,130 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $name }}
-  namespace: {{ $.Values.default.app.namespace | default "argocd" }}
+  namespace: {{ ($.Values.default).namespace | default "argocd" }}
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+
 spec:
+  project: {{ $value.project | default ($.Values.default).project | default "default" }}
+
+{{- if $value.sources }}
+  sources:
+{{- range $sourceName, $source := $value.sources }}
+    - repoURL: {{ $source.repoURL | default (($.Values.default).source).repoURL | required (printf "repoURL is required for %s" $name) }}
+      targetRevision: {{ $source.targetRevision | default (($.Values.default).source).targetRevision | default "HEAD" }}
+
+{{- if or $source.path (($.Values.default).source).path }}
+      path: {{ $source.path | default (($.Values.default).source).path}}
+{{- end }}
+
+{{- if $source.helm }}
+      helm:
+{{ $source.helm | toYaml | indent 8 }}
+{{- end }}
+
+{{- if $source.kustomize }}
+      kustomize:
+{{ $source.kustomize | toYaml | indent 8 }}
+{{- end }}
+
+{{- if $source.directory }}
+      directory:
+{{ $source.directory | toYaml | indent 8 }}
+{{- end }}
+
+{{- if $source.plugin }}
+      plugin:
+{{ $source.plugin | toYaml | indent 8 }}
+{{- end }}
+
+{{- if $source.info }}
+      info:
+{{ $source.info | toYaml | indent 8 }}
+{{- end }}
+
+{{- end }}
+
+{{- end }}
+
   destination:
     namespace: {{ $value.namespace | default $name }}
-    server: {{ $value.server | default $.Values.default.app.destination.server | required (printf "No destination.server specified for %s" $name ) }}
+    server: {{ $value.server | default (($.Values.default).destination).server | default "https://kubernetes.default.svc" }}
 
-  project: {{ $value.project | default $.Values.default.app.project | required (printf "No project specified for %s" $name ) }}
+{{- if or $value.syncPolicy ($.Values.default).syncPolicy }}
+  syncPolicy:
+    automated:
+        prune: {{ (($value.syncPolicy).automated).prune | default ((($.Values.default).syncPolicy).automated).prune | default true }}
+        selfHeal: {{ (($value.syncPolicy).automated).selfHeal | default ((($.Values.default).syncPolicy).automated).selfHeal | default true }}
+        allowEmpty: {{ (($value.syncPolicy).automated).allowEmpty | default ((($.Values.default).syncPolicy).automated).allowEmpty | default false }}
 
-  sources:
-{{- if $value.helm }}
-    - repoURL: {{ $value.helm.repoURL | default $.Values.default.app.source.repoURL }}
-      chart: {{ $name }}
-
-{{- if $value.helm.targetRevision }}
-      targetRevision: {{ $value.helm.targetRevision }}
-{{- end }}
-
-      helm:
-
-{{- if $value.helm.ignoreMissingValueFiles }}
-        ignoreMissingValueFiles: {{ $value.helm.ignoreMissingValueFiles }}
-{{- end }}
-
-{{- if $value.helm.passCredentials }}
-        passCredentials: {{ $value.helm.passCredentials }}
-{{- end }}
-
-{{- if $value.helm.releaseName }}
-        releaseName: {{ $value.helm.releaseName }}
-{{- end }}
-
-{{- if $value.helm.skipCrds }}
-        skipCrds: {{ $value.helm.skipCrds }}
-{{- end }}
-
-{{- if $value.helm.version }}
-        version: {{ $value.helm.version }}
-{{- end }}
-
-{{- if $value.helm.fileParameters }}
-        fileParameters:
-{{ $value.helm.fileParameters | toYaml | indent 10 }}
-{{- end }}
-
-{{- if $value.helm.parameters }}
-        parameters:
-{{ $value.helm.parameters | toYaml | indent 10 }}
-{{- end }}
-
-{{- if $value.helm.values }}
-        values: |
-{{ $value.helm.values | toYaml | indent 10 }}
-{{- end }}
-
-{{- if $value.helm.valuesObject }}
-        valuesObject:
-{{ $value.helm.valuesObject | toYaml | indent 10 }}
-{{- end }}
-
-{{- if $value.helm.valueFiles }}
-        valueFiles:
-{{ $value.helm.valueFiles | toYaml | indent 10 }}
+    syncOptions:
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).createNamespace) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).createNamespace) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).createNamespace }}
+      - CreateNamespace={{ (($value.syncPolicy).syncOptions).createNamespace }}
+{{- else }}
+      - CreateNamespace={{ ((($.Values.default).syncPolicy).syncOptions).createNamespace }}
 {{- end }}
 {{- end }}
-
-{{- if $value.git }}
-    - repoURL: {{ $value.git.repoURL | default $.Values.default.app.source.repoURL }}
-      path: {{ $value.git.path | required (printf "No path specified for %s!!!" $name ) }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).replace) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).replace) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).replace }}
+      - Replace={{ (($value.syncPolicy).syncOptions).replace }}
+{{- else }}
+      - Replace={{ ((($.Values.default).syncPolicy).syncOptions).replace }}
+{{- end }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).pruneLast) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).pruneLast) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).pruneLast }}
+      - PruneLast={{ (($value.syncPolicy).syncOptions).pruneLast }}
+{{- else }}
+      - PruneLast={{ ((($.Values.default).syncPolicy).syncOptions).pruneLast }}
+{{- end }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).applyOutOfSyncOnly) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).applyOutOfSyncOnly) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).applyOutOfSyncOnly }}
+      - ApplyOutOfSyncOnly={{ (($value.syncPolicy).syncOptions).applyOutOfSyncOnly }}
+{{- else }}
+      - ApplyOutOfSyncOnly={{ ((($.Values.default).syncPolicy).syncOptions).applyOutOfSyncOnly }}
+{{- end }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).validate) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).validate) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).validate }}
+      - Validate={{ (($value.syncPolicy).syncOptions).validate }}
+{{- else }}
+      - Validate={{ ((($.Values.default).syncPolicy).syncOptions).validate }}
+{{- end }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).respectIgnoreDifferences) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).respectIgnoreDifferences) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).respectIgnoreDifferences }}
+      - RespectIgnoreDifferences={{ (($value.syncPolicy).syncOptions).respectIgnoreDifferences }}
+{{- else }}
+      - RespectIgnoreDifferences={{ ((($.Values.default).syncPolicy).syncOptions).respectIgnoreDifferences }}
+{{- end }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).serverSideApply) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).serverSideApply) }}
+{{- if typeIs "bool" (($value.syncPolicy).syncOptions).serverSideApply }}
+      - ServerSideApply={{ (($value.syncPolicy).syncOptions).serverSideApply }}
+{{- else }}
+      - ServerSideApply={{ ((($.Values.default).syncPolicy).syncOptions).serverSideApply }}
+{{- end }}
 {{- end }}
 
+{{- if ($value.syncPolicy).managedNamespaceMetadata }}
+    managedNamespaceMetadata:
+{{ $value.syncPolicy.managedNamespaceMetadata | toYaml | indent 6 }}
+{{- end }}
 
+{{- if ($value.syncPolicy).retry }}
+    retry:
+{{ $value.syncPolicy.retry | toYaml | indent 6 }}
+{{- end }}
+
+{{- end }}
+
+{{- if $value.ignoreDifferences }}
+  ignoreDifferences:
+{{ $value.ignoreDifferences | toYaml | indent 4 }}
+{{- end }}
+
+  revisionHistoryLimit: {{ $value.revisionHistoryLimit | default ($.Values.default).revisionHistoryLimit | default "10" }}
 {{- end }}
