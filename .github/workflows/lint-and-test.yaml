@@ -57,3 +57,25 @@ jobs:
       - name: Push PR images
         run: |
           echo ${{ steps.list-changed.outputs.changed_charts }}
+
+      - name: Process Changed Charts
+        id: process-charts
+        run: |
+          CHARTS=(${{ steps.list-changes.outputs.changed_charts }})
+
+          # Loop through the charts
+          for chart in "${CHARTS[@]}"; do
+            echo "Processing $chart"
+          done
+
+      # - name: Read Helm Chart
+      #   id: chart
+      #   uses: jacobtomlinson/gha-read-helm-chart@master
+      #   with:
+      #     path: path/to/chart
+
+      # - name: Print outputs
+      #   run: |
+      #     echo "Name - ${{ steps.chart.outputs.name }}"
+      #     echo "Version - ${{ steps.chart.outputs.version }}"
+      #     echo "App Version - ${{ steps.chart.outputs.appVersion }}"
