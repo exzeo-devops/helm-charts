@@ -62,10 +62,20 @@ spec:
 
 {{- if or $value.syncPolicy ($.Values.default).syncPolicy }}
   syncPolicy:
+{{- if or (typeIs "bool" ($value.syncPolicy).automated) (typeIs "bool" ((($.Values.default).syncPolicy).automated)) }}
     automated:
+{{- if or (typeIs "bool" (($value.syncPolicy).automated).prune) (typeIs "bool" ((($.Values.default).syncPolicy).automated).prune) -}}
         prune: {{ (($value.syncPolicy).automated).prune | default ((($.Values.default).syncPolicy).automated).prune | default true }}
+{{- end }}
+{{- if or (typeIs "bool" (($value.syncPolicy).automated).selfHeal) (typeIs "bool" ((($.Values.default).syncPolicy).automated).selfHeal)  }}
         selfHeal: {{ (($value.syncPolicy).automated).selfHeal | default ((($.Values.default).syncPolicy).automated).selfHeal | default true }}
-        allowEmpty: {{ (($value.syncPolicy).automated).allowEmpty | default ((($.Values.default).syncPolicy).automated).allowEmpty | default false }}
+{{- end }}
+
+{{- if or (typeIs "bool" (($value.syncPolicy).automated).allowEmpty) (typeIs "bool" ((($.Values.default).syncPolicy).automated).allowEmpty) }}}
+        allowEmpty: {{ (($value.syncPolicy).automated).allowEmpty | default ((($.Values.default).syncPolicy).automated).allowEmpty }}
+{{- end }}
+
+{{- end }}
 
     syncOptions:
 {{- if or (typeIs "bool" (($value.syncPolicy).syncOptions).createNamespace) (typeIs "bool" ((($.Values.default).syncPolicy).syncOptions).createNamespace) }}
