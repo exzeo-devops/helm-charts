@@ -49,6 +49,7 @@ spec:
 {{- if $source.info }}
       info:
 {{ $source.info | toYaml | indent 8 }}
+
 {{- end }}
 
 {{- end }}
@@ -115,6 +116,7 @@ spec:
 {{- else }}
       - ServerSideApply={{ ((($.Values.default).syncPolicy).syncOptions).serverSideApply }}
 {{- end }}
+
 {{- end }}
 
 {{- if ($value.syncPolicy).managedNamespaceMetadata }}
