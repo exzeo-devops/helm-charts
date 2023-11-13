@@ -72,10 +72,10 @@ jobs:
   release:
     needs: [lint-test]
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        value: ${{ needs.lint-test.outputs.matrix }}
+    # strategy:
+    #   matrix:
+    #     value: ${{ needs.lint-test.outputs.matrix }}
     steps:
       - name: Push PR images
         run: |
-          echo ${{ matrix.value }}
+          echo ${{ needs.lint-test.outputs.matrix }}
