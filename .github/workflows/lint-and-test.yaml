@@ -61,7 +61,7 @@ jobs:
       - name: Process Changed Charts
         id: process-charts
         run: |
-          CHARTS=(${{ steps.list-changes.outputs.changed_charts }})
+          CHARTS=(${{ steps.list-changed.outputs.changed_charts }})
 
           # Loop through the charts
           for chart in "${CHARTS[@]}"; do
