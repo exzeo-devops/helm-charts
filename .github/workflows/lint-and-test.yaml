@@ -35,7 +35,7 @@ jobs:
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed_charts=$charts" >> $GITHUB_OUTPUT
-            echo "matrixArray=$(echo ${charts[@]} | jq -n"
+            echo "matrixArray=$(echo ${charts[@]} | jq -n)"
           fi
 
       # - name: Run chart-testing (lint)
