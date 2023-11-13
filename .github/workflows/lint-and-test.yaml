@@ -73,8 +73,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        value: ${{ needs.lint-test.outputs.matrix }}
+        value: ${{ fromJson(needs.lint-test.outputs.matrix) }}
     steps:
       - name: Push PR images
         run: |
-          echo ${{ matrix }}
+          echo ${{ matrix.value }}
