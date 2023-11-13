@@ -6,7 +6,7 @@ jobs:
   lint-test:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.list-changed.outputs.matrixArray }}
+      changed_charts: ${{ steps.list-changed.outputs.changed_charts_json }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -35,7 +35,7 @@ jobs:
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed_charts=$charts" >> $GITHUB_OUTPUT
-            echo "matrixArray=$(echo ${charts[@]} | jq -n)" >> $GITHUB_OUTPUT
+            echo "changed_charts_json=$(echo ${charts[@]} | jq -n)" >> $GITHUB_OUTPUT
           fi
 
       # - name: Run chart-testing (lint)
@@ -74,8 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     # strategy:
     #   matrix:
-    #     value: ${{ needs.lint-test.outputs.matrix }}
+    #     value: ${{ fromJson(needs.lint-test.outputs.matrix) }}
     steps:
       - name: Push PR images
         run: |
-          echo ${{ needs.lint-test.outputs.matrix }}
+          echo ${{ needs.lint-test.outputs.changed_charts }}
