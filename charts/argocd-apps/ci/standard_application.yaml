@@ -11,15 +11,14 @@ default:
 applications:
   metrics-server:
     namespace: kube-system
-    sources:
-      default:
-        repoURL: https://kubernetes-sigs.github.io/metrics-server
-        targetRevision: "x"
-        chart: "metrics-server"
-        helm:
-          valuesObject:
-            replicas: 1
-            metrics:
-              enabled: true
-            serviceMonitor:
-              enabled: true
+    source:
+      repoURL: https://kubernetes-sigs.github.io/metrics-server
+      targetRevision: "x"
+      chart: "metrics-server"
+      helm:
+        valuesObject:
+          replicas: 1
+          metrics:
+            enabled: true
+          serviceMonitor:
+            enabled: true

@@ -12,6 +12,47 @@ metadata:
 spec:
   project: {{ $value.project | default ($.Values.default).project | default "default" }}
 
+{{- if $value.source }}
+  source:
+    repoURL: {{ $value.source.repoURL | default (($.Values.default).source).repoURL | required (printf "repoURL is required for %s" $name) }}
+    targetRevision: {{ $value.source.targetRevision | default (($.Values.default).source).targetRevision | default "HEAD" }}
+
+{{- if $value.source.chart }}
+    chart: {{ $value.source.chart }}
+{{- end }}
+
+{{- if or $value.source.path (($.Values.default).source).path }}
+    path: {{ $value.source.path | default (($.Values.default).source).path}}
+{{- end }}
+
+{{- if $value.source.helm }}
+    helm:
+{{ $value.source.helm | toYaml | indent 6 }}
+{{- end }}
+
+{{- if $value.source.kustomize }}
+    kustomize:
+{{ $value.source.kustomize | toYaml | indent 6 }}
+{{- end }}
+
+{{- if $value.source.directory }}
+    directory:
+{{ $value.source.directory | toYaml | indent 6 }}
+{{- end }}
+
+{{- if $value.source.plugin }}
+    plugin:
+{{ $value.source.plugin | toYaml | indent 6 }}
+{{- end }}
+
+{{- if $value.source.info }}
+    info:
+{{ $value.source.info | toYaml | indent 6 }}
+
+{{- end }}
+
+{{- end }}
+
 {{- if $value.sources }}
   sources:
 {{- range $sourceName, $source := $value.sources }}
