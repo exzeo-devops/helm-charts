@@ -45,7 +45,7 @@ jobs:
           CHARTS=(${{ steps.list-changed.outputs.changed_charts }})
           for chart in "${CHARTS[@]}"; do
             echo "Updating README.md for ${chart}"
-            readme-generator --values "charts/${chart}/values.yaml" --readme "charts/${chart}/README.md"
+            readme-generator --values "${chart}/values.yaml" --readme "${chart}/README.md"
           done
 
       - name: Push changes
