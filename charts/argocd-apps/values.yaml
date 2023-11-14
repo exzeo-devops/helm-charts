@@ -17,8 +17,8 @@
 ## @extra default.syncPolicy.syncOptions.respectIgnoreDifferences When syncing changes, respect fields ignored by the ignoreDifferences configuration
 ## @extra default.syncPolicy.syncOptions.serverSideApply
 default:
-  source: {}
-    # repoURL: ""
+  source:
+    repoURL: ""
   syncPolicy:
     automated:
       prune: true
