@@ -35,8 +35,8 @@ jobs:
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+            echo "changed_charts_json=$(echo $changed_charts | jq -R -c 'split(" ")')" >> $GITHUB_OUTPUT
           fi
-          changed_charts_json=$(echo $changed_charts | jq -R -c 'split(" ")')
 
       - name: Echo
         run: |
