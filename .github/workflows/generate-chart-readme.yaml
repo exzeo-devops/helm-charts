@@ -49,11 +49,8 @@ jobs:
           done
 
       - name: Push changes
+        if: steps.list-changed.outputs.changed == 'true'
         run: |
-          # Push all the changes
-          cd charts
-          if git status -s | grep charts; then
-            git config user.name "DevOps"
-            git config user.email "devops@exzeo.com"
-            git add . && git commit -am "Update README.md with readme-generator-for-helm" --signoff && git push
-          fi
+          git config user.name "DevOps"
+          git config user.email "devops@exzeo.com"
+          git add . && git commit -am "Update README.md with readme-generator-for-helm" --signoff && git push
