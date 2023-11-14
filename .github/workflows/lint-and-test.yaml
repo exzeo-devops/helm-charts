@@ -64,31 +64,33 @@ jobs:
       # - name: Run chart-testing (install)
       #   run: ct install --config ./.github/configs/ct-install.yaml --target-branch ${{ github.event.repository.default_branch }}
 
-      # - name: Read Helm Chart
-      #   id: chart
-      #   uses: jacobtomlinson/gha-read-helm-chart@master
-      #   with:
-      #     path: path/to/chart
-
-      # - name: Print outputs
-      #   run: |
-      #     echo "Name - ${{ steps.chart.outputs.name }}"
-      #     echo "Version - ${{ steps.chart.outputs.version }}"
-      #     echo "App Version - ${{ steps.chart.outputs.appVersion }}"
-
   release:
     needs: [lint-test]
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     value:
-    #       - gov1
-    #       - gov2
 
     strategy:
       matrix:
         value: ${{ fromJson(needs.lint-test.outputs.changed_charts) }}
     steps:
-      - name: Push PR images
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
         run: |
-          echo ${{ matrix.value }}
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Read Helm Chart
+        id: chart
+        uses: jacobtomlinson/gha-read-helm-chart@master
+        with:
+          path: ${{ matrix.value }}
+
+      - name: Print outputs
+        run: |
+          echo "Name - ${{ steps.chart.outputs.name }}"
+          echo "Version - ${{ steps.chart.outputs.version }}"
+          echo "App Version - ${{ steps.chart.outputs.appVersion }}"
