@@ -91,4 +91,4 @@ jobs:
     steps:
       - name: Push PR images
         run: |
-          echo ${{ needs.lint-test.outputs.changed_charts }}
+          echo ${{ matrix.value }}
