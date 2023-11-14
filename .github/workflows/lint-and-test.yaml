@@ -35,8 +35,8 @@ jobs:
           if [[ -n "$changed" ]]; then
             echo "changed=true" >> $GITHUB_OUTPUT
             echo "changed_charts=$charts" >> $GITHUB_OUTPUT
-            echo "changed_charts_json=$(echo $changed_charts | jq -R -c 'split(" ")')" >> $GITHUB_OUTPUT
           fi
+          changed_charts_json=$(echo $changed_charts | jq -R -c 'split(" ")')
 
       # - name: Run chart-testing (lint)
       #   run: ct lint --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml --target-branch ${{ github.event.repository.default_branch }}
