@@ -26,18 +26,27 @@ jobs:
           repository: ${{github.event.pull_request.head.repo.full_name}}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2.6.0
+
+      - name: List changed charts
+        id: list-changed
+        run: |
+          ## If executed with debug this won't work anymore.
+          changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
+          charts=$(echo "$changed" | tr '\n' ' ' | xargs)
+          if [[ -n "$changed" ]]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+          fi
+
       - name: Execute readme-generator-for-helm
         env:
           DIFF_URL: "${{github.event.pull_request.diff_url}}"
           TEMP_FILE: "${{runner.temp}}/pr-${{github.event.number}}.diff"
         run: |
-          exit_code=0
-          # This request doesn't consume API calls.
-          curl -Lkso $TEMP_FILE $DIFF_URL
-          files_changed="$(sed -nr 's/[\-\+]{3} [ab]\/(.*)/\1/p' $TEMP_FILE | sort | uniq)"
-          # Adding || true to avoid "Process exited with code 1" errors
-          charts_dirs_changed="$(echo "$files_changed" | xargs dirname | grep -o "charts/[^/]*" | sort | uniq || true)"
-          for chart in ${charts_dirs_changed}; do
+          CHARTS=(${{ steps.list-changed.outputs.changed_charts }})
+          for chart in "${CHARTS[@]}"; do
             echo "Updating README.md for ${chart}"
             readme-generator --values "charts/${chart}/values.yaml" --readme "charts/${chart}/README.md"
           done
