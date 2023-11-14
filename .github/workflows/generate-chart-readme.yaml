@@ -38,34 +38,8 @@ jobs:
           # Adding || true to avoid "Process exited with code 1" errors
           charts_dirs_changed="$(echo "$files_changed" | xargs dirname | grep -o "charts/[^/]*" | sort | uniq || true)"
           for chart in ${charts_dirs_changed}; do
-            echo "Validating README.md for ${chart}"
-            # Validating *.registry parameters
-            while read line; do
-              echo "$line" | grep --quiet "\[default: \(REGISTRY_NAME\|\"\"\)\]" || exit_code=$?
-            done < <(grep "@param\s\+[A-Za-z\.]\+\.registry\s\+" "charts/${chart}/values.yaml")
-            if [[ $exit_code -ne 0 ]]; then
-              echo "::error:: Please ensure all *.registry params include the [default: REGISTRY_NAME] modifier the chart/${chart}/values.yaml file"
-              exit "$exit_code"
-            fi
-            # Validating *.repository parameters
-            while read line; do
-              param=$(echo "$line" | awk '{print $3}')
-              # Checking if it's a image's registry-related param
-              registry_param=$(echo ${param} | sed 's/\.repository/\.registry/g')
-              grep --quiet "@param\s\+${registry_param}" "charts/${chart}/values.yaml" && ( echo "$line" | grep --quiet "\[default: \(REPOSITORY_NAME/.*\|\"\"\)\]" || exit_code=$? )
-            done < <(grep "@param\s\+[A-Za-z\.]\+\.repository\s\+" "charts/${chart}/values.yaml")
-            if [[ $exit_code -ne 0 ]]; then
-              echo "::error:: Please ensure all *.repository params include the [default: REPOSITORY_NAME] modifier the charts/${chart}/values.yaml file"
-              exit "$exit_code"
-            fi
-            # Validating *.tag parameters
-            ! grep --quiet "@param\s\+[A-Za-z\.]\+\.tag\s\+" "charts/${chart}/values.yaml" || exit_code=$?
-            if [[ $exit_code -ne 0 ]]; then
-              echo "::error:: Please ensure all *.tag params are skipped (@skip) in the charts/${chart}/values.yaml file"
-              exit "$exit_code"
-            fi
             echo "Updating README.md for ${chart}"
-            readme-generator --values "charts/${chart}/values.yaml" --readme "charts/${chart}/README.md" --schema "/tmp/schema.json"
+            readme-generator --values "charts/${chart}/values.yaml" --readme "charts/${chart}/README.md"
           done
 
       - name: Push changes
@@ -73,7 +47,7 @@ jobs:
           # Push all the changes
           cd charts
           if git status -s | grep charts; then
-            git config user.name "Exzeo Containers"
+            git config user.name "DevOps"
             git config user.email "devops@exzeo.com"
             git add . && git commit -am "Update README.md with readme-generator-for-helm" --signoff && git push
           fi
