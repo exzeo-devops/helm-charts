@@ -1,11 +1,11 @@
 name: '[CI/CD] Update README metadata'
 
-on:
-  pull_request_target:
-    branches:
-      - main
-    paths:
-      - 'charts/*/values.yaml'
+on: pull_request
+  # pull_request_target:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'charts/*/values.yaml'
 
 # Remove all permissions by default
 permissions: {}

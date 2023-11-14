@@ -5,45 +5,45 @@ on: pull_request
 jobs:
   lint-test:
     runs-on: ubuntu-latest
-    outputs:
-      changed_charts: ${{ steps.list-changed.outputs.changed_charts_json }}
+    # outputs:
+    #   changed_charts: ${{ steps.list-changed.outputs.changed_charts_json }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v3
-        with:
-          version: v3.12.1
+      # - name: Set up Helm
+      #   uses: azure/setup-helm@v3
+      #   with:
+      #     version: v3.12.1
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-          check-latest: true
+      # - uses: actions/setup-python@v4
+      #   with:
+      #     python-version: '3.10'
+      #     check-latest: true
 
-      - name: Set up chart-testing
-        uses: helm/chart-testing-action@v2.6.0
+      # - name: Set up chart-testing
+      #   uses: helm/chart-testing-action@v2.6.0
 
-      - name: List changed charts
-        id: list-changed
-        run: |
-          ## If executed with debug this won't work anymore.
-          changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
-          charts=$(echo "$changed" | tr '\n' ' ' | xargs)
-          if [[ -n "$changed" ]]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "changed_charts=$charts" >> $GITHUB_OUTPUT
-            echo "changed_charts_json=$(echo $charts | jq -R -c 'split(" ")')" >> $GITHUB_OUTPUT
-          fi
+      # - name: List changed charts
+      #   id: list-changed
+      #   run: |
+      #     ## If executed with debug this won't work anymore.
+      #     changed=$(ct --config ./.github/configs/ct-lint.yaml list-changed)
+      #     charts=$(echo "$changed" | tr '\n' ' ' | xargs)
+      #     if [[ -n "$changed" ]]; then
+      #       echo "changed=true" >> $GITHUB_OUTPUT
+      #       echo "changed_charts=$charts" >> $GITHUB_OUTPUT
+      #       echo "changed_charts_json=$(echo $charts | jq -R -c 'split(" ")')" >> $GITHUB_OUTPUT
+      #     fi
 
-      - name: Echo
-        run: |
-          echo "${{ steps.list-changed.outputs.changed }}"
-          echo "${{ steps.list-changed.outputs.charts }}"
-          echo "${{ steps.list-changed.outputs.changed_charts }}"
-          echo "${{ steps.list-changed.outputs.changed_charts_json }}"
+      # - name: Echo
+      #   run: |
+      #     echo "${{ steps.list-changed.outputs.changed }}"
+      #     echo "${{ steps.list-changed.outputs.charts }}"
+      #     echo "${{ steps.list-changed.outputs.changed_charts }}"
+      #     echo "${{ steps.list-changed.outputs.changed_charts_json }}"
 
       # - name: Run chart-testing (lint)
       #   run: ct lint --config ./.github/configs/ct-lint.yaml --lint-conf ./.github/configs/lintconf.yaml --target-branch ${{ github.event.repository.default_branch }}
@@ -64,33 +64,33 @@ jobs:
       # - name: Run chart-testing (install)
       #   run: ct install --config ./.github/configs/ct-install.yaml --target-branch ${{ github.event.repository.default_branch }}
 
-  release:
-    needs: [lint-test]
-    runs-on: ubuntu-latest
+  # release:
+  #   needs: [lint-test]
+  #   runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        value: ${{ fromJson(needs.lint-test.outputs.changed_charts) }}
-    steps:
+  #   strategy:
+  #     matrix:
+  #       value: ${{ fromJson(needs.lint-test.outputs.changed_charts) }}
+  #   steps:
 
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  #     - name: Checkout
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Configure Git
-        run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+  #     - name: Configure Git
+  #       run: |
+  #         git config user.name "$GITHUB_ACTOR"
+  #         git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
 
-      - name: Read Helm Chart
-        id: chart
-        uses: jacobtomlinson/gha-read-helm-chart@master
-        with:
-          path: ${{ matrix.value }}
+  #     - name: Read Helm Chart
+  #       id: chart
+  #       uses: jacobtomlinson/gha-read-helm-chart@master
+  #       with:
+  #         path: ${{ matrix.value }}
 
-      - name: Print outputs
-        run: |
-          echo "Name - ${{ steps.chart.outputs.name }}"
-          echo "Version - ${{ steps.chart.outputs.version }}"
-          echo "App Version - ${{ steps.chart.outputs.appVersion }}"
+  #     - name: Print outputs
+  #       run: |
+  #         echo "Name - ${{ steps.chart.outputs.name }}"
+  #         echo "Version - ${{ steps.chart.outputs.version }}"
+  #         echo "App Version - ${{ steps.chart.outputs.appVersion }}"
