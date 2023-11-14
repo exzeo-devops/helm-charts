@@ -85,9 +85,9 @@ jobs:
     #       - gov1
     #       - gov2
 
-    # strategy:
-    #   matrix:
-    #     value: ${{ fromJson(needs.lint-test.outputs.matrix) }}
+    strategy:
+      matrix:
+        value: ${{ fromJson(needs.lint-test.outputs.matrix) }}
     steps:
       - name: Push PR images
         run: |
