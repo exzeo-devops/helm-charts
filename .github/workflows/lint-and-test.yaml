@@ -87,7 +87,7 @@ jobs:
 
     strategy:
       matrix:
-        value: ${{ fromJson(needs.lint-test.outputs.matrix) }}
+        value: ${{ fromJson(needs.lint-test.outputs.changed_charts) }}
     steps:
       - name: Push PR images
         run: |
