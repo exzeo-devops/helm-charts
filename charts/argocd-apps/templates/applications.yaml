@@ -62,9 +62,10 @@ spec:
 
 {{- if or $value.syncPolicy ($.Values.default).syncPolicy }}
   syncPolicy:
+
 {{- if or ($value.syncPolicy).automated ((($.Values.default).syncPolicy).automated) }}
     automated:
-{{- if or (typeIs "bool" (($value.syncPolicy).automated).prune) (typeIs "bool" ((($.Values.default).syncPolicy).automated).prune) -}}
+{{- if or (typeIs "bool" (($value.syncPolicy).automated).prune) (typeIs "bool" ((($.Values.default).syncPolicy).automated).prune) }}
         prune: {{ (($value.syncPolicy).automated).prune | default ((($.Values.default).syncPolicy).automated).prune | default true }}
 {{- end }}
 {{- if or (typeIs "bool" (($value.syncPolicy).automated).selfHeal) (typeIs "bool" ((($.Values.default).syncPolicy).automated).selfHeal)  }}
