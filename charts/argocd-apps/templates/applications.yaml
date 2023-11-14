@@ -59,6 +59,10 @@ spec:
     - repoURL: {{ $source.repoURL | default (($.Values.default).source).repoURL | required (printf "repoURL is required for %s" $name) }}
       targetRevision: {{ $source.targetRevision | default (($.Values.default).source).targetRevision | default "HEAD" }}
 
+{{- if $source.ref }}
+      ref: {{ $source.ref }}
+{{- end }}
+
 {{- if $source.chart }}
       chart: {{ $source.chart }}
 {{- end }}
