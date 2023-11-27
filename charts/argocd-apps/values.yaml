@@ -17,6 +17,7 @@
 ## @extra default.syncPolicy.syncOptions.respectIgnoreDifferences When syncing changes, respect fields ignored by the ignoreDifferences configuration
 ## @extra default.syncPolicy.syncOptions.serverSideApply
 default:
+  pathPrefix: ""
   source:
     repoURL: ""
   syncPolicy:
@@ -55,7 +56,7 @@ applications: []
 #             serviceMonitor:
 #               enabled: true
 #       git:
-#         path: "cluster/devops/metrics-server"
+#         path: "metrics-server"
 #         directory:
 #           recurse: true
 #           include: "*.yaml"

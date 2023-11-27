@@ -68,7 +68,7 @@ spec:
 {{- end }}
 
 {{- if or $source.path (($.Values.default).source).path }}
-      path: {{ $source.path | default (($.Values.default).source).path}}
+      path: {{ (printf "%s/%s" $.Values.default.pathPrefix $source.path) | default (printf "%s/%s" $.Values.default.pathPrefix (($.Values.default).source).path) }}
 {{- end }}
 
 {{- if $source.helm }}
