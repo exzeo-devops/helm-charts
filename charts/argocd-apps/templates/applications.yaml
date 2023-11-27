@@ -22,7 +22,7 @@ spec:
 {{- end }}
 
 {{- if or $value.source.path (($.Values.default).source).path }}
-    path: {{ $value.source.path | default (($.Values.default).source).path}}
+    path: {{ (printf "%s/%s" $.Values.default.pathPrefix ($value.$source).path) | default (printf "%s/%s" $.Values.default.pathPrefix (($.Values.default).source).path) }}
 {{- end }}
 
 {{- if $value.source.helm }}
