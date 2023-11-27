@@ -19,7 +19,7 @@
 default:
   pathPrefix: ""
   source:
-    repoURL: ""
+    repoURL: "test"
   syncPolicy:
     automated:
       prune: true
@@ -39,24 +39,24 @@ default:
 
 ## @skip applications
 ## @extra applications.<name>
-applications: []
+# applications: []
 
 # Example application
-# applications:
-#   metrics-server:
-#     namespace: kube-system
-#     sources:
-#       default:
-#         repoURL: https://kubernetes-sigs.github.io/metrics-server
-#         helm:
-#           valuesObject:
-#             replicas: 1
-#             metrics:
-#               enabled: true
-#             serviceMonitor:
-#               enabled: true
-#       git:
-#         path: "metrics-server"
-#         directory:
-#           recurse: true
-#           include: "*.yaml"
+applications:
+  metrics-server:
+    namespace: kube-system
+    sources:
+      default:
+        repoURL: https://kubernetes-sigs.github.io/metrics-server
+        helm:
+          valuesObject:
+            replicas: 1
+            metrics:
+              enabled: true
+            serviceMonitor:
+              enabled: true
+      git:
+        path: "metrics-server"
+        directory:
+          recurse: true
+          include: "*.yaml"

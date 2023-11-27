@@ -1,5 +1,5 @@
 {{- range $name, $value := .Values.applications }}
-
+{{- if or (not (typeIs "bool" $value.enabled)) $value.enabled }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -193,4 +193,5 @@ spec:
 {{- end }}
 
   revisionHistoryLimit: {{ $value.revisionHistoryLimit | default ($.Values.default).revisionHistoryLimit | default "10" }}
+{{- end }}
 {{- end }}
