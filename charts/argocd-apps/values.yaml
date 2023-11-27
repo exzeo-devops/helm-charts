@@ -40,6 +40,8 @@ default:
 ## @skip applications
 ## @extra applications.<name>
 applications: []
+  # metrics-server:
+  #   namespace: kube-system
 
 # Example application
 # applications:
