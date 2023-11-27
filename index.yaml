@@ -3,6 +3,19 @@ entries:
   argocd-apps:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2023-11-27T23:59:24.310893373Z"
+    digest: 234aa244629f1b2dc420ddb6fb2137ed99aa588ba8fea5692f891fafd2a34c6a
+    home: https://github.com/exzeo-devops/helm-charts
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    maintainers:
+    - name: exzeo-devops
+      url: https://exzeo-devops.github.io/
+    name: argocd-apps
+    urls:
+    - https://github.com/exzeo-devops/helm-charts/releases/download/argocd-apps-0.1.17/argocd-apps-0.1.17.tgz
+    version: 0.1.17
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2023-11-27T23:38:50.15995458Z"
     digest: 155e079c6fa534dcc6dc75c4fae18f185720335c4855bcafa4e7025b9a08e92c
     home: https://github.com/exzeo-devops/helm-charts
@@ -212,4 +225,4 @@ entries:
     urls:
     - https://github.com/exzeo-devops/argocd-apps-helm/releases/download/argocd-apps-0.1.0/argocd-apps-0.1.0.tgz
     version: 0.1.0
-generated: "2023-11-27T23:38:50.16003778Z"
+generated: "2023-11-27T23:59:24.31146648Z"
