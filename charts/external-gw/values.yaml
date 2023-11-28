@@ -46,3 +46,4 @@ service:
   # destination:
   #   host: "service.namespace.svc.cluster.local"
   #   port: 3000
+  

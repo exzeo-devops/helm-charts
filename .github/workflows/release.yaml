@@ -7,14 +7,14 @@ on:
       - "charts/**"
 
 permissions:
-  contents: read      
+  contents: read
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     permissions:
       contents: write  # for helm/chart-releaser-action to push chart release and create a release
-      packages: write  # to push OCI chart package to GitHub Registry    
+      packages: write  # to push OCI chart package to GitHub Registry
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -46,4 +46,4 @@ jobs:
               break
             fi
             helm push "${pkg}" oci://ghcr.io/${{ github.repository }}
-          done          
+          done
