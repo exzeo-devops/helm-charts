@@ -1,0 +1,16 @@
+{{- if or (not (typeIs "bool" .Values.certificate.enabled)) .Values.certificate.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ template "chart.certificate.name" . }}
+  namespace: {{ .Values.certificate.namespace }}
+spec:
+  secretName: {{ template "chart.certificate.secret" . }}
+  dnsNames:
+{{ include "chart.hosts" . | indent 4 }}
+  issuerRef:
+    name: {{ .Values.certificate.issuer.name }}
+    kind: {{ .Values.certificate.issuer.kind }}
+    group: {{ .Values.certificate.issuer.group }}
+
+{{- end }}

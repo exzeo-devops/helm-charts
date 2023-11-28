@@ -1,0 +1,30 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: {{ template "chart.gateway.name" . }}
+  namespace: {{ .Values.gateway.namespace }}
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      tls:
+        httpsRedirect: true
+      hosts:
+{{ include "chart.hosts" . | indent 8 }}
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: {{ template "chart.certificate.secret" . }}
+      hosts:
+{{ include "chart.hosts" . | indent 8 }}
+
+{{- if .Values.gateway.additionalServers }}
+{{ tpl (.Values.gateway.additionalServers | toYaml) . | indent 4 }}
+{{- end }}
