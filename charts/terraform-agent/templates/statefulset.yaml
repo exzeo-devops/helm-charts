@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "charts.name" . }}
+  labels:
+    app: {{ template "charts.name" . }}
+    chart: {{ .Chart.Name }}
+    chart-version: v{{ .Chart.Version }}
+    release-timestamp: {{ template "release.timestamp" . }}
+    release-date: {{ template "release.date" . }}
+spec:
+  replicas: {{ .Values.replicas }}
+  serviceName: {{ template "charts.name" . }}
+  selector:
+    matchLabels:
+      app: {{ template "charts.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "charts.name" . }}
+        release: {{ .Release.Name }}        
+        chart: {{ .Chart.Name }}
+        release-timestamp: {{ template "release.timestamp" . }}
+        release-date: {{ template "release.date" . }}
+      annotations:
+        kubectl.kubernetes.io/default-container: {{ template "charts.name" . }}
+        rollme: {{ randAlphaNum 5 | quote }}
+{{- if .Values.podAnnotations }}
+  {{- range $key, $value := .Values.podAnnotations }}
+        {{ $key }}: {{ $value | quote }}
+  {{- end }}
+{{- end }}
+
+    spec:
+
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+        runAsGroup: 999
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+
+      containers:
+        - name: {{ template "charts.name" . }}
+          image: {{ .Values.image }}
+          imagePullPolicy: {{ .Values.pullPolicy}}
+          env:
+          - name: TFC_AGENT_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: TFC_AGENT_LOG_LEVEL
+            value: {{.Values.logLevel | quote }}
+          - name: TFC_AGENT_TOKEN
+            value: {{.Values.token | quote }}
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            privileged: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+              - ALL  

@@ -1,0 +1,31 @@
+## Project Settings
+
+# Name of the application (defaults to .Chart.Name)
+nameOverride: ""
+
+## Number of replicas
+replicas: 1
+
+# Docker image
+image: "hashicorp/tfc-agent:latest"      
+
+# If you want to rely on pre-pulled images as a substitute for registry authentication, 
+# you must ensure all nodes in the cluster have the same pre-pulled images.
+# Options: Always, IfNotPresent, Never
+pullPolicy: Always
+
+# The log verbosity expressed as a level string. Level options include "trace", "debug", "info", "warn", and "error".
+logLevel: "info"
+
+# The agent token to use when making requests to the Terraform Cloud API.
+token: ""
+
+# Adds custom annotations to pod
+podAnnotations: {}
+
+# Control the cpu and memory resources allocated by the Kubernetes cluster
+resources:
+  requests:
+    memory: "200Mi"
+  limits:
+    memory: "400Mi" 
