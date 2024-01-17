@@ -1,9 +1,10 @@
-# name: "service"
-
-# hosts:
-#   - test.example.com
-
-# service:
-#   destination:
-#     host: service.namespace.svc.cluster.local
-#     port: 3000
+workspace:
+  projects:
+    - name: mongodb
+      project: Avatar
+      executionMode: agent
+      repository: exzeo-devops/avatar-infrastructure
+      environments:
+        - qa
+        - demo
+        - live
