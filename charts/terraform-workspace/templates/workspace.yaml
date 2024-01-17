@@ -1,0 +1,40 @@
+{{- range $workspace := .Values.workspace.projects }}
+  {{- range $environment := $workspace.environments }}
+
+apiVersion: app.terraform.io/v1alpha2
+kind: Workspace
+metadata:
+  name: {{ $workspace.name }}-{{ $workspace.project | lower }}-{{ $environment }}-{{ $workspace.region | default "us-east-1" }}
+spec:
+  organization: {{ $.Values.organization }}
+  token:
+    secretKeyRef:
+      name: {{ $.Values.secretName }}
+      key: token
+  name: {{ $workspace.name }}-{{ $workspace.project | lower }}-{{ $environment }}-{{ $workspace.region | default "us-east-1" }}
+  description: {{ $workspace.description | default "Automated workspace creation by terraform-cloud-controller" }}
+  executionMode: {{ $workspace.executionMode | default "remote" }}
+  {{- if eq $workspace.executionMode "agent" }}
+  agentPool:
+    name: {{ $.Values.agentPool }}
+  {{- end }}
+  {{- if $workspace.workingDirectory}}
+  workingDirectory: {{ $workspace.workingDirectory }}/{{ $environment }}
+  {{- else }}
+  workingDirectory: {{ $workspace.name }}/terraform/workspaces/{{ $environment }}
+  {{- end }}
+  versionControl:
+    repository: {{ $workspace.repository }}
+    oAuthTokenID: {{ $.Values.oAuthTokenID }}
+  project:
+    name: {{ $workspace.project }}
+  tags:
+    - {{ $environment }}
+    - {{ $workspace.project | lower }}
+    - {{ $workspace.name }}
+  {{- range $tags := $workspace.tags }}
+    - {{ $tags }}
+  {{- end }}
+---
+  {{- end }}
+{{- end }}
