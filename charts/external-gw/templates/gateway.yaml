@@ -5,7 +5,7 @@ metadata:
   namespace: {{ .Values.gateway.namespace }}
 spec:
   selector:
-    istio: ingressgateway
+    istio: {{ .Values.gateway.selector }}
   servers:
     - port:
         number: 80

@@ -23,6 +23,9 @@ gateway:
   # Name of the gateway
   name: ""
 
+  # Name of the selector
+  selector: "ingressgateway"
+
   # Namespace to create the gateway in
   namespace: "istio-system"
 
