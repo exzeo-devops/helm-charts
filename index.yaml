@@ -228,6 +228,19 @@ entries:
   external-gw:
   - apiVersion: v2
     appVersion: "1.0"
+    created: "2024-01-22T21:41:18.309287409Z"
+    digest: f7a1867a893442c9ed9fd86e3b31f58b94c0b00842565855d19ee07bb7845c09
+    home: https://github.com/exzeo-devops/helm-charts
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    maintainers:
+    - name: exzeo-devops
+      url: https://exzeo-devops.github.io/
+    name: external-gw
+    urls:
+    - https://github.com/exzeo-devops/helm-charts/releases/download/external-gw-1.0.3/external-gw-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
+    appVersion: "1.0"
     created: "2024-01-22T21:37:55.003197004Z"
     digest: 7ce8025c624f272fee7ad8096046edc0c78a15e8b70f3e5d575fb6622cf0c19d
     home: https://github.com/exzeo-devops/helm-charts
@@ -265,4 +278,4 @@ entries:
     urls:
     - https://github.com/exzeo-devops/helm-charts/releases/download/external-gw-1.0.0/external-gw-1.0.0.tgz
     version: 1.0.0
-generated: "2024-01-22T21:37:55.003398632Z"
+generated: "2024-01-22T21:41:18.30934126Z"
