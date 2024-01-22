@@ -45,7 +45,20 @@ service:
   # Name of the virtual service
   name: ""
 
-  # Destination to service
-  # destination:
-  #   host: "service.namespace.svc.cluster.local"
-  #   port: 3000
+  route: {}
+    # http:
+    #   - match:
+    #     - uri:
+    #         prefix: "/wpcatalog"
+    #     - uri:
+    #         prefix: "/consumercatalog"
+    #     rewrite:
+    #       uri: "/newcatalog"
+    #     route:
+    #     - destination:
+    #         host: reviews # interpreted as reviews.foo.svc.cluster.local
+    #         subset: v2
+    #   - route:
+    #     - destination:
+    #         host: reviews # interpreted as reviews.foo.svc.cluster.local
+    #         subset: v1

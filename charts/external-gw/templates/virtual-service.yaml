@@ -7,27 +7,4 @@ spec:
 {{ include "chart.hosts" . | indent 4 }}
   gateways:
     - {{ .Values.gateway.namespace }}/{{ template "chart.gateway.name" . }}
-  http:
-    - route:
-        - destination:
-            host: {{ ((.Values.service).destination).host | required "service.destination.host is required" }}
-            port:
-              number: {{ ((.Values.service).destination).port | required "service.destination.port is required" }}
-
-{{- if ((.Values.service).destination).prefix }}
-      match:
-        - uri:
-            prefix: {{ ((.Values.service).destination).prefix }}
-{{- end }}
-
-{{- if ((.Values.service).destination).forward }}
-      headers:
-        request:
-          set:
-            X-Forwarded-Port: "443"
-{{- end }}
-
-
-{{- if .Values.service.additionalRoutes }}
-{{ tpl (.Values.service.additionalRoutes | toYaml) . | indent 4 }}
-{{- end }}
+{{ .Values.service.route | toYaml | indent 2  }}
