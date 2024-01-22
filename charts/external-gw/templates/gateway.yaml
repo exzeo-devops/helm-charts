@@ -3,6 +3,10 @@ kind: Gateway
 metadata:
   name: {{ template "chart.gateway.name" . }}
   namespace: {{ .Values.gateway.namespace }}
+  labels:
+    app: {{ template "chart.name" . }}
+    chart: {{ template "chart.chart" . }}
+    version: {{ .Chart.Version }}
 spec:
   selector:
     istio: {{ .Values.gateway.selector }}
