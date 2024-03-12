@@ -9,6 +9,11 @@ metadata:
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 
+{{- if $value.annotations }}
+  annotations:
+{{ $value.annotations | toYaml | indent 4 }}
+{{- end }}
+
 spec:
   project: {{ $value.project | default ($.Values.default).project | default "default" }}
 
