@@ -1,0 +1,14 @@
+name: Publish helm charts
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+    paths:
+      - charts/**
+
+jobs:
+  publish:
+    uses: exzeo-devops/action-workflows/.github/workflows/helm-publish.yaml@main
